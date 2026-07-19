@@ -120,7 +120,7 @@ def vista_entrevista():
     respuesta = st.chat_input("Escribe tu respuesta…")
     if respuesta:
         ss.mensajes.append(("user", respuesta))
-        with st.spinner("Clima está escuchando…"):
+        with st.spinner("AURA está interpretando tu respuesta y preparando la próxima pregunta..."):
             resultado = _orquestador().invoke(Command(resume=respuesta), ss.config)
         if "__interrupt__" in resultado:
             datos = resultado["__interrupt__"][0].value
