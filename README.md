@@ -38,7 +38,19 @@ El resultado es un sistema que mantiene consistencia metodologica, mejora la exp
 
 ## Arquitectura
 
-La solucion esta organizada en dos agentes especializados y un orquestador explicito. Cada agente se implementa como grafo de **LangGraph**, con responsabilidades separadas y comunicacion asincrona mediante artefactos JSON.
+Dos agentes con roles diferenciados y un orquestador explícito, implementados
+como grafos de **LangGraph**:
+
+- **Agente Entrevistador ("Clima")** — conduce la entrevista conversacional con
+  *human-in-the-loop* (`interrupt`), interpreta cada respuesta (puntaje 1–5,
+  sentimiento, temas), repregunta ante respuestas evasivas y consolida un
+  registro **seudonimizado** en `entrevistas/`.
+- **Agente Analista** — se sincroniza con los registros, calcula métricas con
+  **código determinista** (auditables y reproducibles), usa el LLM solo para el
+  análisis cualitativo y genera el informe en `informes/`.
+- **Orquestador** — grafo padre que valida la solicitud y enruta hacia el agente
+  correspondiente. Los agentes se comunican de forma asíncrona a través de los
+  artefactos JSON (almacén compartido).
 
 ```mermaid
 flowchart TB
@@ -73,55 +85,14 @@ flowchart TB
     LLM -.-> Q
 ```
 
-### Componentes
+Diagrama y flujo detallados: [`docs/arquitectura.md`](docs/arquitectura.md) ·
+Decisiones y trade-offs: [`DECISIONES.md`](DECISIONES.md) ·
+Ejemplo de informe generado: [`docs/informe_ejemplo.md`](docs/informe_ejemplo.md)
 
-| Componente | Responsabilidad | Salida principal |
-| --- | --- | --- |
-| Orquestador | Valida la solicitud y enruta hacia entrevista o analisis. | Ejecucion del grafo correspondiente. |
-| Agente Entrevistador | Conduce la conversacion, interpreta respuestas y gestiona repreguntas. | Registro seudonimizado en `entrevistas/*.json`. |
-| Agente Analista | Carga entrevistas, calcula metricas y genera analisis cualitativo. | Informe Markdown en `informes/*.md`. |
-| Almacen compartido | Permite comunicacion asincrona entre agentes. | Artefactos JSON auditables. |
-| Dashboard | Presenta participacion, metricas, riesgos y observabilidad. | Vista ejecutiva en Streamlit. |
+## Instalación (Windows 11)
 
-## Funcionalidades Principales
-
-- **Entrevista conversacional anonima** con seudonimo aleatorio `EMP-XXXX`.
-- **Guion consistente** de 16 preguntas distribuidas en 8 dimensiones de clima.
-- **Human-in-the-loop** mediante `interrupt()` de LangGraph.
-- **Repreguntas controladas** ante respuestas evasivas, ambiguas o insuficientes.
-- **Salida anticipada** con `salir`, conservando respuestas parciales.
-- **Medicion por ambito**, ya sea compania completa o equipo especifico.
-- **Dashboard en Streamlit** con participacion, promedios, dimensiones en riesgo, temas recurrentes y generacion de informe.
-- **Panel de configuracion** para editar preguntas, prompts, equipos, parametros del analista, umbrales y modelo LLM.
-- **Modo offline** con LLM simulado para pruebas, demo y contingencia.
-- **Observabilidad local** por agente, nodo, latencia, exito, error y eventos de participacion.
-- **Pruebas end-to-end** sin depender de credenciales externas.
-
-## Stack Tecnico
-
-| Capa | Tecnologia |
-| --- | --- |
-| Lenguaje | Python 3.12+ |
-| Orquestacion multiagente | LangGraph |
-| LLM | Gemini mediante `langchain-google-genai` |
-| Interfaz web | Streamlit |
-| Procesamiento de datos | pandas |
-| Configuracion | python-dotenv + JSON local |
-| Persistencia operativa | Archivos JSON y Markdown |
-| Observabilidad | JSONL local + LangSmith opcional |
-| Pruebas | Scripts end-to-end y GitHub Actions |
-
-## Instalacion
-
-### Requisitos
-
-- Python 3.12 o superior.
-- Git.
-- Una API key de Google AI Studio para ejecutar el LLM real.
-
-> En Windows, al instalar Python se recomienda marcar la opcion **Add Python to PATH**.
-
-### Windows 11
+Requisitos: [Python 3.12+](https://www.python.org/downloads/) (marcar
+*"Add Python to PATH"* al instalar) y [Git](https://git-scm.com/).
 
 ```powershell
 git clone <url-del-repositorio>
