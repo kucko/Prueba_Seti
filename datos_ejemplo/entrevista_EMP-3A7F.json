@@ -1,0 +1,220 @@
+{
+  "empleado_id": "EMP-3A7F",
+  "ambito": "equipo",
+  "equipo": "Operaciones",
+  "fecha": "2026-07-15T09:00:00",
+  "completada": true,
+  "preguntas_respondidas": 16,
+  "total_preguntas": 16,
+  "resumen": "Percepción general mixta (promedio 3.0/5).",
+  "respuestas": [
+    {
+      "pregunta_id": 1,
+      "dimension": "Liderazgo",
+      "pregunta_base": "¿Cómo es tu relación con tu líder directo y cómo te apoya en el día a día?",
+      "pregunta_formulada": "¿Cómo es tu relación con tu líder directo y cómo te apoya en el día a día?",
+      "respuesta": "Nos reunimos cuando hay problemas, en el día a día cada quien resuelve.",
+      "puntaje": 3,
+      "sentimiento": "neutral",
+      "temas": [
+        "apoyo reactivo del líder"
+      ],
+      "nota": "Nos reunimos cuando hay problemas, en el día a día cada quien resuelve."
+    },
+    {
+      "pregunta_id": 2,
+      "dimension": "Liderazgo",
+      "pregunta_base": "Cuando cometes un error, ¿cómo suele reaccionar tu líder?",
+      "pregunta_formulada": "Cuando cometes un error, ¿cómo suele reaccionar tu líder?",
+      "respuesta": "Depende del día, a veces lo toma bien y a veces no.",
+      "puntaje": 3,
+      "sentimiento": "neutral",
+      "temas": [
+        "reacción variable ante errores"
+      ],
+      "nota": "Depende del día, a veces lo toma bien y a veces no."
+    },
+    {
+      "pregunta_id": 3,
+      "dimension": "Comunicación",
+      "pregunta_base": "¿Te enteras a tiempo y con claridad de las decisiones que afectan tu trabajo?",
+      "pregunta_formulada": "¿Te enteras a tiempo y con claridad de las decisiones que afectan tu trabajo?",
+      "respuesta": "A veces llega la información a tiempo, otras veces muy tarde.",
+      "puntaje": 3,
+      "sentimiento": "neutral",
+      "temas": [
+        "comunicación inconsistente"
+      ],
+      "nota": "A veces llega la información a tiempo, otras veces muy tarde."
+    },
+    {
+      "pregunta_id": 4,
+      "dimension": "Comunicación",
+      "pregunta_base": "¿Sientes que tus ideas son escuchadas cuando las propones?",
+      "pregunta_formulada": "¿Sientes que tus ideas son escuchadas cuando las propones?",
+      "respuesta": "Escuchan, aunque pocas ideas se implementan.",
+      "puntaje": 3,
+      "sentimiento": "neutral",
+      "temas": [
+        "escucha sin implementación"
+      ],
+      "nota": "Escuchan, aunque pocas ideas se implementan."
+    },
+    {
+      "pregunta_id": 5,
+      "dimension": "Reconocimiento y compensación",
+      "pregunta_base": "¿Sientes que tu trabajo es reconocido y valorado?",
+      "pregunta_formulada": "¿Sientes que tu trabajo es reconocido y valorado?",
+      "respuesta": "Siento que mi esfuerzo pasa desapercibido.",
+      "puntaje": 2,
+      "sentimiento": "negativo",
+      "temas": [
+        "falta de reconocimiento"
+      ],
+      "nota": "Siento que mi esfuerzo pasa desapercibido."
+    },
+    {
+      "pregunta_id": 6,
+      "dimension": "Reconocimiento y compensación",
+      "pregunta_base": "¿Consideras justa tu compensación frente a tus responsabilidades?",
+      "pregunta_formulada": "¿Consideras justa tu compensación frente a tus responsabilidades?",
+      "respuesta": "El salario está por debajo del mercado para mi rol.",
+      "puntaje": 2,
+      "sentimiento": "negativo",
+      "temas": [
+        "salario bajo el mercado"
+      ],
+      "nota": "El salario está por debajo del mercado para mi rol."
+    },
+    {
+      "pregunta_id": 7,
+      "dimension": "Desarrollo",
+      "pregunta_base": "¿Ves oportunidades reales de crecer profesionalmente en la organización?",
+      "pregunta_formulada": "¿Ves oportunidades reales de crecer profesionalmente en la organización?",
+      "respuesta": "No veo un plan de carrera claro, las vacantes se llenan por fuera.",
+      "puntaje": 2,
+      "sentimiento": "negativo",
+      "temas": [
+        "sin plan de carrera"
+      ],
+      "nota": "No veo un plan de carrera claro, las vacantes se llenan por fuera."
+    },
+    {
+      "pregunta_id": 8,
+      "dimension": "Desarrollo",
+      "pregunta_base": "¿Has recibido formación o apoyo para desarrollar nuevas habilidades en el último año?",
+      "pregunta_formulada": "¿Has recibido formación o apoyo para desarrollar nuevas habilidades en el último año?",
+      "respuesta": "Este año no he recibido ninguna capacitación.",
+      "puntaje": 2,
+      "sentimiento": "negativo",
+      "temas": [
+        "sin capacitación"
+      ],
+      "nota": "Este año no he recibido ninguna capacitación."
+    },
+    {
+      "pregunta_id": 9,
+      "dimension": "Trabajo en equipo",
+      "pregunta_base": "¿Cómo describirías la colaboración dentro de tu equipo?",
+      "pregunta_formulada": "¿Cómo describirías la colaboración dentro de tu equipo?",
+      "respuesta": "Mi equipo es lo mejor de la empresa, confianza total.",
+      "puntaje": 5,
+      "sentimiento": "positivo",
+      "temas": [
+        "equipo excepcional"
+      ],
+      "nota": "Mi equipo es lo mejor de la empresa, confianza total."
+    },
+    {
+      "pregunta_id": 10,
+      "dimension": "Trabajo en equipo",
+      "pregunta_base": "Cuando necesitas ayuda de otras áreas, ¿qué tan fácil es conseguirla?",
+      "pregunta_formulada": "Cuando necesitas ayuda de otras áreas, ¿qué tan fácil es conseguirla?",
+      "respuesta": "Hay buena disposición entre áreas.",
+      "puntaje": 4,
+      "sentimiento": "positivo",
+      "temas": [
+        "colaboración entre áreas"
+      ],
+      "nota": "Hay buena disposición entre áreas."
+    },
+    {
+      "pregunta_id": 11,
+      "dimension": "Balance y carga laboral",
+      "pregunta_base": "¿Tu carga de trabajo te permite desconectarte y descansar?",
+      "pregunta_formulada": "¿Tu carga de trabajo te permite desconectarte y descansar?",
+      "respuesta": "Casi todas las semanas trabajo de noche o el fin de semana.",
+      "puntaje": 2,
+      "sentimiento": "negativo",
+      "temas": [
+        "sobrecarga frecuente"
+      ],
+      "nota": "Casi todas las semanas trabajo de noche o el fin de semana."
+    },
+    {
+      "pregunta_id": 12,
+      "dimension": "Balance y carga laboral",
+      "pregunta_base": "¿Con qué frecuencia sientes estrés laboral que afecta tu vida personal?",
+      "pregunta_formulada": "¿Con qué frecuencia sientes estrés laboral que afecta tu vida personal?",
+      "respuesta": "El estrés me está afectando el sueño y el ánimo.",
+      "puntaje": 2,
+      "sentimiento": "negativo",
+      "temas": [
+        "estrés afecta salud"
+      ],
+      "nota": "El estrés me está afectando el sueño y el ánimo."
+    },
+    {
+      "pregunta_id": 13,
+      "dimension": "Seguridad psicológica",
+      "pregunta_base": "¿Te sientes seguro expresando desacuerdos sin temor a consecuencias?",
+      "pregunta_formulada": "¿Te sientes seguro expresando desacuerdos sin temor a consecuencias?",
+      "respuesta": "Puedo estar en desacuerdo y se discute con respeto.",
+      "puntaje": 4,
+      "sentimiento": "positivo",
+      "temas": [
+        "desacuerdo respetuoso"
+      ],
+      "nota": "Puedo estar en desacuerdo y se discute con respeto."
+    },
+    {
+      "pregunta_id": 14,
+      "dimension": "Seguridad psicológica",
+      "pregunta_base": "¿Confías en que si reportas un problema será tratado de forma justa?",
+      "pregunta_formulada": "¿Confías en que si reportas un problema será tratado de forma justa?",
+      "respuesta": "RRHH ha manejado bien los casos que conozco.",
+      "puntaje": 4,
+      "sentimiento": "positivo",
+      "temas": [
+        "gestión justa de reportes"
+      ],
+      "nota": "RRHH ha manejado bien los casos que conozco."
+    },
+    {
+      "pregunta_id": 15,
+      "dimension": "Pertenencia y propósito",
+      "pregunta_base": "¿Sientes orgullo de trabajar en esta organización? ¿Por qué?",
+      "pregunta_formulada": "¿Sientes orgullo de trabajar en esta organización? ¿Por qué?",
+      "respuesta": "La empresa tiene buen nombre, aunque por dentro hay cosas por mejorar.",
+      "puntaje": 3,
+      "sentimiento": "neutral",
+      "temas": [
+        "orgullo con reservas"
+      ],
+      "nota": "La empresa tiene buen nombre, aunque por dentro hay cosas por mejorar."
+    },
+    {
+      "pregunta_id": 16,
+      "dimension": "Pertenencia y propósito",
+      "pregunta_base": "¿Te ves trabajando aquí dentro de dos años?",
+      "pregunta_formulada": "¿Te ves trabajando aquí dentro de dos años?",
+      "respuesta": "Sí, me veo aquí, quiero seguir creciendo.",
+      "puntaje": 4,
+      "sentimiento": "positivo",
+      "temas": [
+        "intención de permanencia"
+      ],
+      "nota": "Sí, me veo aquí, quiero seguir creciendo."
+    }
+  ]
+}
