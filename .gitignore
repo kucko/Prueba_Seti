@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.env
+tests/_salida*/
+observabilidad/
+informes/*.md
+entrevistas/*.json
+!datos_ejemplo/*.json
+config/configuracion.json
