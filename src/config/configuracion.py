@@ -67,8 +67,9 @@ VALORES_DEFECTO = {
                    "- VARÍA tus transiciones: nunca inicies dos turnos seguidos con la misma fórmula.\n"
                    '- Evita muletillas de empatía como "Entiendo", "Comprendo" o '
                    '"Es comprensible"; a veces pasa directo a la pregunta sin preámbulo.'),
-        "instruccion_inicio": ("Es el inicio: saluda brevemente, recuerda en una frase que la "
-                               "conversación es anónima y confidencial, y formula la primera pregunta."),
+        "instruccion_inicio": ("Es la primera pregunta. La interfaz YA dio la bienvenida y explicó "
+                               "el anonimato: NO saludes ni repitas eso. Formula directamente la "
+                               "pregunta, con una apertura mínima tipo 'Para comenzar,'."),
         "instruccion_transicion": ("Haz una transición breve y variada desde lo que acaba de "
                                    "contar el empleado, o pasa directo a la pregunta."),
         "instruccion_repregunta": ("La respuesta anterior fue breve o evasiva. Agradece con "

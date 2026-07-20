@@ -104,11 +104,12 @@ def vista_entrevista():
     etiqueta = (f" · Equipo: **{ss.equipo}**" if ss.get("equipo")
                 else " · Ámbito: **compañía en general**")
     st.info(f"Seudónimo asignado: **{ss.empleado_id}**{etiqueta}")
-    for rol, texto in ss.mensajes:
-        with st.chat_message(rol):
-            st.markdown(texto)
 
     if ss.terminada:
+        with st.expander(f"Ver conversación completa ({len(ss.mensajes)} mensajes)"):
+            for rol, texto in ss.mensajes:
+                with st.chat_message(rol):
+                    st.markdown(texto)
         st.success(ss.get("cierre", "Entrevista finalizada. ¡Gracias!"))
         if st.button("Nueva entrevista"):
             for k in ("mensajes", "en_curso", "terminada", "empleado_id",
@@ -117,10 +118,28 @@ def vista_entrevista():
             st.rerun()
         return
 
+    # Bienvenida fija de la interfaz: no consume LLM y evita que la persona
+    # responda al saludo en lugar de a la pregunta.
+    st.success("👋 **Bienvenido/a a este espacio.** No hay respuestas correctas ni "
+               "incorrectas: cuéntalo con tus propias palabras. Cuando quieras "
+               "terminar, escribe *salir*.")
+
+    # Modo enfocado: la pregunta actual siempre visible; lo ya respondido, plegado.
+    anteriores = ss.mensajes[:-1]
+    if anteriores:
+        with st.expander(f"Ver conversación anterior ({len(anteriores)} mensajes)"):
+            for rol, texto in anteriores:
+                with st.chat_message(rol):
+                    st.markdown(texto)
+    if ss.mensajes:
+        rol_actual, texto_actual = ss.mensajes[-1]
+        with st.chat_message(rol_actual):
+            st.markdown(texto_actual)
+
     respuesta = st.chat_input("Escribe tu respuesta…")
     if respuesta:
         ss.mensajes.append(("user", respuesta))
-        with st.spinner("AURA está interpretando tu respuesta y preparando la próxima pregunta..."):
+        with st.spinner("Clima está escuchando…"):
             resultado = _orquestador().invoke(Command(resume=respuesta), ss.config)
         if "__interrupt__" in resultado:
             datos = resultado["__interrupt__"][0].value
