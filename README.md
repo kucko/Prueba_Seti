@@ -1,9 +1,9 @@
-# Sistema Multiagente de Medicion de Clima Laboral
+# AURA - Sistema Multiagente de Medicion de Clima Laboral
 
-> Reto tecnico - Ingeniero de Inteligencia Artificial - SETI S.A.S.  
+> Reto tecnico - Ingeniero de Inteligencia Artificial - SETI S.A.S.
 > Autor: Andres Felipe Giraldo Hincapie
 
-Sistema multiagente construido con **LangGraph** para transformar la medicion de clima laboral en una conversacion anonima, trazable y analizable. El proyecto reemplaza el formulario tradicional por una entrevista conversacional con IA, interpreta las respuestas en tiempo real y consolida los resultados en informes agregados para apoyar decisiones de talento humano.
+Sistema multiagente construido con **LangGraph** para transformar la medicion de clima laboral en una conversacion anonima, trazable y analizable. El proyecto reemplaza el formulario tradicional por una entrevista conversacional con IA, interpreta las respuestas en tiempo real y consolida los resultados en informes agregados —a nivel de compañia o por equipo— para apoyar decisiones de talento humano.
 
 ## Tabla de Contenido
 
@@ -24,79 +24,101 @@ Sistema multiagente construido con **LangGraph** para transformar la medicion de
 
 ## Problema
 
-Las encuestas tradicionales de clima laboral suelen producir informacion incompleta o sesgada. Aunque se comuniquen como anonimas, muchas personas responden con cautela por miedo a represalias, trazabilidad indirecta o uso indebido de la informacion.
+Las encuestas tradicionales de clima laboral suelen producir informacion incompleta o sesgada. Aunque se comuniquen como anonimas, muchas personas responden con cautela por miedo a represalias, trazabilidad indirecta o uso indebido de la informacion: el 37 % de los empleados no cree que estas encuestas sean realmente anonimas y la mitad admite no responder con total franqueza (Visier, 2025).
 
-Ademas, el formato rigido de formulario limita la expresion de matices importantes: malestar, confianza, reconocimiento, relacion con lideres, colaboracion, oportunidades de crecimiento o intencion de permanencia. Como consecuencia, las organizaciones pueden tomar decisiones relevantes con datos pobres, superficiales o poco accionables.
+Ademas, el formato rigido de formulario limita la expresion de matices importantes: la escala cerrada de 1 a 5 registra el numero, pero pierde el contexto y el porque. Como consecuencia, las organizaciones pueden tomar decisiones relevantes con datos pobres, superficiales o poco accionables — y tarde: tabular e interpretar los resultados puede tomar semanas o meses.
 
 ## Propuesta de Solucion
 
-Este proyecto plantea una alternativa conversacional: un empleado interactua con un **Agente Entrevistador** que cubre siempre el mismo guion metodologico de 16 preguntas agrupadas en 8 dimensiones, pero lo hace en lenguaje natural. La persona puede responder libremente, pedir claridad o terminar antes de tiempo.
+Este proyecto plantea una alternativa conversacional: un empleado interactua con **AURA**, un Agente Entrevistador que cubre siempre el mismo guion metodologico de 16 preguntas agrupadas en 8 dimensiones, pero lo hace en lenguaje natural. La persona puede responder libremente, elegir el ambito de su entrevista (compañia en general o su equipo) y terminar antes de tiempo si lo desea.
 
-Cada respuesta se interpreta de forma estructurada con apoyo de IA: puntaje, sentimiento, temas mencionados y observaciones cualitativas. Luego, un **Agente Analista** consolida todas las entrevistas disponibles, calcula metricas auditables con codigo determinista y usa el LLM solo para enriquecer la lectura cualitativa del clima.
+Cada respuesta se interpreta de forma estructurada con apoyo de IA: puntaje, sentimiento, temas mencionados y observaciones cualitativas — conservando siempre el texto original como evidencia. Luego, un **Agente Analista** consolida todas las entrevistas disponibles (o solo las de un equipo), calcula metricas auditables con codigo determinista y usa el LLM unicamente para enriquecer la lectura cualitativa del clima.
 
-El resultado es un sistema que mantiene consistencia metodologica, mejora la experiencia del empleado y entrega evidencia agregada para la toma de decisiones.
+El resultado es un sistema que mantiene consistencia metodologica, mejora la experiencia del empleado y entrega evidencia agregada y segmentada para la toma de decisiones.
 
 ## Arquitectura
 
-Dos agentes con roles diferenciados y un orquestador explícito, implementados
-como grafos de **LangGraph**:
+Dos agentes con roles diferenciados y un orquestador explicito, implementados como grafos de **LangGraph**:
 
-- **Agente Entrevistador ("Clima")** — conduce la entrevista conversacional con
-  *human-in-the-loop* (`interrupt`), interpreta cada respuesta (puntaje 1–5,
-  sentimiento, temas), repregunta ante respuestas evasivas y consolida un
-  registro **seudonimizado** en `entrevistas/`.
-- **Agente Analista** — se sincroniza con los registros, calcula métricas con
-  **código determinista** (auditables y reproducibles), usa el LLM solo para el
-  análisis cualitativo y genera el informe en `informes/`.
-- **Orquestador** — grafo padre que valida la solicitud y enruta hacia el agente
-  correspondiente. Los agentes se comunican de forma asíncrona a través de los
-  artefactos JSON (almacén compartido).
+- **Agente Entrevistador (AURA)** — conduce la entrevista conversacional con *human-in-the-loop* (`interrupt`), interpreta cada respuesta (puntaje 1-5, sentimiento, temas), repregunta ante respuestas evasivas y consolida un registro **seudonimizado** con su ambito en `entrevistas/`.
+- **Agente Analista** — se sincroniza con los registros (con filtro opcional por equipo), calcula metricas con **codigo determinista** (auditables y reproducibles), aplica el umbral de anonimato, usa el LLM solo para el analisis cualitativo y genera el informe en `informes/`.
+- **Orquestador** — grafo padre que valida la solicitud y enruta hacia el agente correspondiente, propagando el ambito. Los agentes se comunican de forma asincrona a traves de los artefactos JSON (almacen compartido).
+
+![Diagrama de arquitectura](docs/diagrama_arquitectura.png)
 
 ```mermaid
 flowchart TB
     U((Empleado))
-    LLM{{"LLM - Gemini"}}
+    LLM{{"LLM - Gemini 3 Flash"}}
+    CFG[("config/configuracion.json<br/>guion - prompts - parametros - equipos")]
 
     subgraph ORQ["ORQUESTADOR"]
         D[decidir]
     end
 
-    subgraph A1["AGENTE ENTREVISTADOR"]
+    subgraph A1["AGENTE ENTREVISTADOR (AURA)"]
         F[formular_pregunta] --> E["escuchar - interrupt"]
         E --> I[interpretar]
         I -- "repreguntar o avanzar" --> F
-        I -- "guion completo" --> C[consolidar]
+        I -- "guion completo o salir" --> C[consolidar]
     end
 
     subgraph A2["AGENTE ANALISTA"]
-        L[cargar_entrevistas] --> M[calcular_metricas]
+        L[cargar_entrevistas] -- "hay datos" --> M[calcular_metricas]
+        L -- "sin datos" --> V[reportar_vacio]
         M --> Q[analizar_cualitativo]
         Q --> G[generar_informe]
     end
 
-    D -- "modo entrevista" --> F
-    D -- "modo analisis" --> L
+    D -- "modo entrevista - seudonimo + equipo" --> F
+    D -- "modo analisis - filtro de equipo" --> L
     U <--> E
-    C --> J[("entrevistas/*.json")]
+    C --> J[("entrevistas/*.json<br/>seudonimos - ambito")]
     J --> L
-    G --> R[("informes/*.md")]
+    G --> R[("informes/*.md<br/>general o por equipo")]
     LLM -.-> F
     LLM -.-> I
     LLM -.-> Q
+    CFG -.-> A1
+    CFG -.-> A2
 ```
 
 Diagrama y flujo detallados: [`docs/arquitectura.md`](docs/arquitectura.md) ·
 Decisiones y trade-offs: [`DECISIONES.md`](DECISIONES.md) ·
 Ejemplo de informe generado: [`docs/informe_ejemplo.md`](docs/informe_ejemplo.md)
 
-## Instalación (Windows 11)
+## Funcionalidades Principales
 
-Requisitos: [Python 3.12+](https://www.python.org/downloads/) (marcar
-*"Add Python to PATH"* al instalar) y [Git](https://git-scm.com/).
+- Entrevista conversacional por chat web o CLI, con seudonimo aleatorio, bienvenida separada del agente, modo enfocado (pregunta actual visible, historial plegado), progreso del guion y salida anticipada.
+- Ambitos de medicion: compañia en general o un equipo especifico, con lista de equipos configurable.
+- Repregunta amable ante respuestas evasivas (maximo configurable) e interpretacion estructurada de cada respuesta con evidencia textual.
+- Informes segmentados en Markdown: general (con tabla de resultados por equipo) o por equipo, con indice de clima, promedios por dimension, alertas, temas recurrentes, intencion de permanencia y analisis cualitativo.
+- Umbral de anonimato: los equipos con pocas entrevistas no se reportan individualmente.
+- Dashboard con participacion (respondidas, completadas, entrevistas por dia), resultados por ambito, indice por equipo y generacion del informe con un clic.
+- Observabilidad diferenciada por agente: llamadas al LLM, latencia, errores y tasa de finalizacion, con telemetria local en JSONL.
+- Panel de configuracion completo: preguntas, prompts del Entrevistador, parametros del Analista, equipos y modelo LLM, con cambios aplicados de inmediato.
+- Modo offline con LLM simulado para pruebas y demostraciones sin credenciales.
+
+## Stack Tecnico
+
+| Componente | Tecnologia |
+| --- | --- |
+| Framework de agentes | LangGraph 1.2 (StateGraph, interrupt, checkpointer) |
+| Modelo de lenguaje | Gemini 3 Flash (proveedor intercambiable en `src/utils/llm.py`) |
+| Interfaz web | Streamlit |
+| Analisis de datos | Python 3.12, pandas, estadistica determinista |
+| Pruebas | Suite end-to-end offline + Streamlit AppTest |
+| Integracion continua | GitHub Actions |
+
+## Instalacion
+
+Requisitos: [Python 3.12+](https://www.python.org/downloads/) (marcar *"Add Python to PATH"* al instalar) y [Git](https://git-scm.com/).
+
+### Windows 11
 
 ```powershell
-git clone <url-del-repositorio>
-cd clima-laboral-agentes
+git clone https://github.com/kucko/Prueba_Seti.git
+cd Prueba_Seti
 
 python -m venv .venv
 .venv\Scripts\activate
@@ -114,8 +136,8 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ### Linux o macOS
 
 ```bash
-git clone <url-del-repositorio>
-cd clima-laboral-agentes
+git clone https://github.com/kucko/Prueba_Seti.git
+cd Prueba_Seti
 
 python -m venv .venv
 source .venv/bin/activate
@@ -144,7 +166,7 @@ En Linux o macOS:
 export USAR_LLM_FALSO=1
 ```
 
-La configuracion funcional del sistema se persiste en:
+La configuracion funcional del sistema (valores de fabrica en `src/config/configuracion.py`) se persiste al editarla en:
 
 ```text
 config/configuracion.json
@@ -164,9 +186,9 @@ La interfaz incluye tres vistas principales:
 
 | Vista | Proposito |
 | --- | --- |
-| Entrevista | Chat conversacional con el Agente Entrevistador, progreso del guion y salida anticipada. |
-| Configuracion | Administracion de preguntas, prompts, equipos, umbrales, analista y modelo LLM. |
-| Dashboard | Indicadores de participacion, resultados de clima, riesgos, temas, equipos e informes. |
+| Entrevista | Chat conversacional con AURA, seleccion de ambito (general o equipo), progreso del guion y salida anticipada. |
+| Dashboard | Indicadores de participacion, resultados de clima por ambito, riesgos, temas, indice por equipo, observabilidad por agente e informes. |
+| Configuracion | Administracion de preguntas, prompts, equipos, umbrales, parametros del analista y modelo LLM. |
 
 ### Linea de comandos
 
@@ -197,29 +219,29 @@ python main.py analizar --equipo "Tecnologia"
 
 ## Pruebas
 
-Ejecutar la prueba de humo:
+Prueba de humo end-to-end (no requiere API key):
 
 ```powershell
 python -m tests.prueba_humo
 ```
 
-La prueba valida el flujo principal en modo offline:
+Valida el flujo principal en modo offline:
 
-- Entrevista completa con 16 preguntas.
+- Entrevista completa con las 16 preguntas y ambito por equipo.
 - Uso de `interrupt()` para capturar respuestas.
 - Repregunta ante respuestas evasivas.
 - Consolidacion de entrevista seudonimizada.
-- Calculo deterministico de metricas.
+- Calculo deterministico de metricas y analisis segmentado por equipo con umbral de anonimato.
 - Generacion de informe.
-- Manejo de directorios sin entrevistas.
+- Manejo de directorios o equipos sin entrevistas.
 
-Cuando esta disponible, la suite tambien incluye pruebas de interfaz con Streamlit AppTest:
+Pruebas de la interfaz con Streamlit AppTest (sin navegador):
 
 ```powershell
 python -m tests.prueba_interfaz
 ```
 
-El flujo de CI ejecuta las pruebas automaticamente en GitHub Actions:
+El flujo de CI ejecuta ambas suites automaticamente en cada push:
 
 ```text
 .github/workflows/ci.yml
@@ -244,14 +266,16 @@ El flujo de CI ejecuta las pruebas automaticamente en GitHub Actions:
 |   `-- utils/
 |       |-- llm.py
 |       `-- telemetria.py
-|-- config/
-|   `-- configuracion.json
+|-- config/                      (configuracion.json generado en tiempo de ejecucion)
 |-- datos_ejemplo/
-|-- entrevistas/
-|-- informes/
-|-- observabilidad/
+|-- entrevistas/                 (git-ignorado: datos reales)
+|-- informes/                    (git-ignorado)
+|-- observabilidad/              (git-ignorado)
 |-- docs/
 |   |-- arquitectura.md
+|   |-- arquitectura.pdf
+|   |-- diagrama_arquitectura.png
+|   |-- diagrama_arquitectura.svg
 |   |-- informe_ejemplo.md
 |   |-- guion_sustentacion.md
 |   `-- sustentacion.pptx
@@ -272,8 +296,8 @@ El diseno sigue un enfoque de privacidad por defecto:
 - Cada entrevista se guarda con un seudonimo aleatorio.
 - Los informes se generan sobre resultados agregados.
 - Las notas cualitativas se redactan sin datos identificables.
-- Los equipos con baja participacion no se reportan individualmente.
-- Los archivos `.env`, `entrevistas/`, `informes/` y `observabilidad/` deben mantenerse fuera del control de versiones cuando contengan informacion sensible.
+- Los equipos con baja participacion no se reportan individualmente (umbral de anonimato configurable).
+- Los archivos `.env`, `entrevistas/`, `informes/`, `observabilidad/` y `config/configuracion.json` estan excluidos del control de versiones mediante `.gitignore`.
 
 ## Observabilidad
 
@@ -289,10 +313,10 @@ Cada evento permite revisar:
 - Nodo del grafo.
 - Latencia.
 - Resultado exitoso o error.
-- Hitos de participacion.
+- Hitos de participacion (con su equipo).
 - Tasa de finalizacion y abandono.
 
-Para trazabilidad avanzada con LangSmith, definir:
+El dashboard presenta estas metricas de forma diferenciada para cada agente. Para trazabilidad avanzada con LangSmith, definir:
 
 ```env
 LANGSMITH_TRACING=true
@@ -305,6 +329,7 @@ LANGSMITH_API_KEY=tu_api_key
 - **Metricas deterministicas**: los calculos cuantitativos se hacen con codigo para que sean reproducibles y auditables.
 - **LLM acotado**: el modelo se usa para lenguaje natural, interpretacion y sintesis cualitativa, no para calculos criticos.
 - **Artefactos simples**: JSON para entrevistas y Markdown para informes, facilitando inspeccion, pruebas y versionamiento.
+- **Configuracion en caliente**: los agentes leen la configuracion en cada llamada; talento humano adapta el instrumento sin desplegar codigo.
 - **Modo offline**: permite validar la arquitectura y hacer demostraciones sin depender de credenciales, red o cuota del proveedor.
 - **Umbral de anonimato**: protege equipos pequenos frente a reidentificacion indirecta.
 
@@ -317,7 +342,7 @@ LANGSMITH_API_KEY=tu_api_key
 
 ## Documentacion Complementaria
 
-- [`docs/arquitectura.md`](docs/arquitectura.md): arquitectura y flujo detallado.
+- [`docs/arquitectura.md`](docs/arquitectura.md): arquitectura y flujo detallado (tambien en [PDF](docs/arquitectura.pdf)).
 - [`DECISIONES.md`](DECISIONES.md): decisiones y trade-offs principales.
 - [`docs/informe_ejemplo.md`](docs/informe_ejemplo.md): ejemplo de informe generado.
 - [`BITACORA_IA.md`](BITACORA_IA.md): uso de IA durante la construccion del proyecto.
